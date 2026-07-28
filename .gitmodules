@@ -1,0 +1,3 @@
+[submodule "external/libxkbcommon"]
+	path = external/libxkbcommon
+	url = https://github.com/xkbcommon/libxkbcommon.git
