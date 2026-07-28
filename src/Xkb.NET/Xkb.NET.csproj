@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Xkb</RootNamespace>
+    <AssemblyName>xkbcommon-dotnet</AssemblyName>
+    <PackageId>xkbcommon-dotnet</PackageId>
+    <Description>.NET bindings for libxkbcommon, the XKB keymap compiler and keyboard state library</Description>
+    <PackageTags>xkbcommon;xkb;keyboard;keymap;keysym;compose;wayland;kms;evdev;x11;linux;interop;bindings</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsAotCompatible>true</IsAotCompatible>
+    <NoWarn>$(NoWarn);CS8981</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

@@ -87,9 +87,8 @@ StyleCopReport.xml
 *.ipdb
 *.pgc
 *.pgd
-*.rsp
-# but not Directory.Build.rsp, as it configures directory-level build defaults
-!Directory.Build.rsp
+# *.rsp is not ignored: eng/*.rsp drives ClangSharp binding generation
+#*.rsp
 *.sbr
 *.tlb
 *.tli

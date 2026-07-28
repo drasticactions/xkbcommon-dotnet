@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install xkbcommon libraries and keymap data
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon0 libxkbcommon-x11-0 libxkbregistry0 xkb-data
+
+      - name: Build
+        run: dotnet build -c Release
+
+      - name: Test
+        run: dotnet test -c Release --no-build --logger "console;verbosity=normal"
+
+      - name: Pack
+        run: dotnet pack src/Xkb.NET/Xkb.NET.csproj -c Release -o artifacts
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/*
