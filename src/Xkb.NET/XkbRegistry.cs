@@ -10,6 +10,11 @@ namespace Xkb;
 /// </summary>
 public sealed unsafe class XkbRegistry : IDisposable
 {
+    // The bindings are generated from the 1.13.2 headers, but the installed
+    // libxkbregistry may be older; entry points added later must degrade
+    // gracefully instead of surfacing EntryPointNotFoundException.
+    private static bool _optionIsLayoutSpecificMissing;
+
     private rxkb_context* _context;
 
     private XkbRegistry(rxkb_context* context)
@@ -152,7 +157,7 @@ public sealed unsafe class XkbRegistry : IDisposable
                         ToString(Libxkbregistry.rxkb_option_get_brief(option)),
                         ToString(Libxkbregistry.rxkb_option_get_description(option)),
                         (XkbPopularity)Libxkbregistry.rxkb_option_get_popularity(option),
-                        Libxkbregistry.rxkb_option_is_layout_specific(option) != 0));
+                        IsLayoutSpecific(option)));
                 }
 
                 groups.Add(new XkbRegistryOptionGroup(
@@ -179,6 +184,24 @@ public sealed unsafe class XkbRegistry : IDisposable
 
     private static string? ToString(sbyte* value) =>
         value is null ? null : Marshal.PtrToStringUTF8((IntPtr)value);
+
+    private static bool IsLayoutSpecific(rxkb_option* option)
+    {
+        if (!_optionIsLayoutSpecificMissing)
+        {
+            try
+            {
+                return Libxkbregistry.rxkb_option_is_layout_specific(option) != 0;
+            }
+            catch (EntryPointNotFoundException)
+            {
+                // rxkb_option_is_layout_specific was added in xkbcommon 1.11.
+                _optionIsLayoutSpecificMissing = true;
+            }
+        }
+
+        return false;
+    }
 }
 
 /// <summary>A keyboard model from the registry.</summary>
@@ -210,7 +233,10 @@ public sealed record XkbRegistryLayout(
 /// <param name="Brief">The brief name, if any.</param>
 /// <param name="Description">The human-readable description, if any.</param>
 /// <param name="Popularity">Whether the option is standard or exotic.</param>
-/// <param name="IsLayoutSpecific">Whether the option applies per layout.</param>
+/// <param name="IsLayoutSpecific">
+/// Whether the option applies per layout. Always false when the installed
+/// libxkbregistry predates 1.11.
+/// </param>
 public sealed record XkbRegistryOption(
     string Name, string? Brief, string? Description, XkbPopularity Popularity, bool IsLayoutSpecific);
 

@@ -42,7 +42,17 @@ public sealed unsafe class XkbComposeTable : IDisposable
     /// </summary>
     public IReadOnlyList<XkbComposeEntry> GetEntries()
     {
-        var iterator = Libxkbcommon.xkb_compose_table_iterator_new(NativePtr);
+        xkb_compose_table_iterator* iterator;
+        try
+        {
+            iterator = Libxkbcommon.xkb_compose_table_iterator_new(NativePtr);
+        }
+        catch (EntryPointNotFoundException e)
+        {
+            // The iterator API was added in xkbcommon 1.6.
+            throw new XkbException("Enumerating compose entries requires libxkbcommon 1.6.0 or newer: " + e.Message);
+        }
+
         if (iterator is null)
         {
             throw new XkbException("Failed to create compose table iterator");
