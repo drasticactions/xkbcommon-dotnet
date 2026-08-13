@@ -11,11 +11,27 @@ internal static unsafe class Libc
 
     static Libc()
     {
-        var owner = OperatingSystem.IsWindows() && NativeLibrary.TryLoad("ucrtbase", out var ucrt)
-            ? ucrt
-            : NativeLibrary.GetMainProgramHandle();
+        nint address = 0;
+        if (OperatingSystem.IsWindows())
+        {
+            foreach (var candidate in new[] { "ucrtbase", "api-ms-win-crt-heap-l1-1-0", "msvcrt", "xkbcommon" })
+            {
+                if (NativeLibrary.TryLoad(candidate, out var module) &&
+                    NativeLibrary.TryGetExport(module, "free", out address))
+                {
+                    break;
+                }
 
-        _free = (delegate* unmanaged[Cdecl]<void*, void>)NativeLibrary.GetExport(owner, "free");
+                address = 0;
+            }
+        }
+
+        if (address == 0)
+        {
+            address = NativeLibrary.GetExport(NativeLibrary.GetMainProgramHandle(), "free");
+        }
+
+        _free = (delegate* unmanaged[Cdecl]<void*, void>)address;
     }
 
     /// <summary>Frees memory allocated by the C library's malloc.</summary>
