@@ -479,3 +479,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Native payloads built by eng/build-natives.*
+/runtimes/

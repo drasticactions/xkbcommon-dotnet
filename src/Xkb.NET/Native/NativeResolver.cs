@@ -19,13 +19,45 @@ internal static class NativeResolver
         {
             // Probe explicitly, since the DllImport name alone does not
             // resolve against the versioned soname.
-            ReadOnlySpan<string> candidates = name switch
-            {
-                Libxkbcommon.LibraryName => ["libxkbcommon.so.0", "libxkbcommon.so", "libxkbcommon"],
-                LibxkbcommonX11.LibraryName => ["libxkbcommon-x11.so.0", "libxkbcommon-x11.so", "libxkbcommon-x11"],
-                Libxkbregistry.LibraryName => ["libxkbregistry.so.0", "libxkbregistry.so", "libxkbregistry"],
-                _ => [],
-            };
+            ReadOnlySpan<string> candidates = OperatingSystem.IsWindows()
+                ? name switch
+                {
+                    Libxkbcommon.LibraryName => ["xkbcommon.dll", "libxkbcommon-0.dll", "libxkbcommon.dll"],
+                    LibxkbcommonX11.LibraryName => ["xkbcommon-x11.dll", "libxkbcommon-x11-0.dll"],
+                    Libxkbregistry.LibraryName => ["xkbregistry.dll", "libxkbregistry-0.dll"],
+                    _ => [],
+                }
+                : OperatingSystem.IsMacOS()
+                    ? name switch
+                    {
+                        Libxkbcommon.LibraryName =>
+                        [
+                            "libxkbcommon.0.dylib", "libxkbcommon.dylib",
+                            "/opt/homebrew/lib/libxkbcommon.0.dylib",
+                            "/usr/local/lib/libxkbcommon.0.dylib",
+                            "/opt/local/lib/libxkbcommon.0.dylib",
+                        ],
+                        LibxkbcommonX11.LibraryName =>
+                        [
+                            "libxkbcommon-x11.0.dylib", "libxkbcommon-x11.dylib",
+                            "/opt/homebrew/lib/libxkbcommon-x11.0.dylib",
+                            "/usr/local/lib/libxkbcommon-x11.0.dylib",
+                        ],
+                        Libxkbregistry.LibraryName =>
+                        [
+                            "libxkbregistry.0.dylib", "libxkbregistry.dylib",
+                            "/opt/homebrew/lib/libxkbregistry.0.dylib",
+                            "/usr/local/lib/libxkbregistry.0.dylib",
+                        ],
+                        _ => [],
+                    }
+                    : name switch
+                    {
+                        Libxkbcommon.LibraryName => ["libxkbcommon.so.0", "libxkbcommon.so", "libxkbcommon"],
+                        LibxkbcommonX11.LibraryName => ["libxkbcommon-x11.so.0", "libxkbcommon-x11.so", "libxkbcommon-x11"],
+                        Libxkbregistry.LibraryName => ["libxkbregistry.so.0", "libxkbregistry.so", "libxkbregistry"],
+                        _ => [],
+                    };
 
             foreach (var candidate in candidates)
             {
