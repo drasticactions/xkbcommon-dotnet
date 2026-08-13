@@ -11,12 +11,11 @@ internal static unsafe class Libc
 
     static Libc()
     {
-        // Resolve free() from the running process rather than naming a libc
-        // soname, so it works on glibc, musl and FreeBSD alike. Strings
-        // malloc'd by libxkbcommon (xkb_keymap_get_as_string) must be released
-        // by the same allocator.
-        _free = (delegate* unmanaged[Cdecl]<void*, void>)NativeLibrary.GetExport(
-            NativeLibrary.GetMainProgramHandle(), "free");
+        var owner = OperatingSystem.IsWindows() && NativeLibrary.TryLoad("ucrtbase", out var ucrt)
+            ? ucrt
+            : NativeLibrary.GetMainProgramHandle();
+
+        _free = (delegate* unmanaged[Cdecl]<void*, void>)NativeLibrary.GetExport(owner, "free");
     }
 
     /// <summary>Frees memory allocated by the C library's malloc.</summary>
