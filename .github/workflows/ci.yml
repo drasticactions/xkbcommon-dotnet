@@ -43,9 +43,9 @@ jobs:
         # libxkbcommon needs bison >= 3.6 on every build host. The x86 binary
         # runs under emulation on the arm64 runner.
         run: choco install -y winflexbison3
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.rid == 'win-arm64' && 'arm64' || 'x64' }}
+      # The script enters the VS developer shell itself. Do not add
+      # ilammy/msvc-dev-cmd here: it exports Platform=x64/arm64, which MSBuild
+      # then takes as the solution platform and fails on "Release|x64".
       - name: Build libxkbcommon
         shell: pwsh
         run: ./eng/build-natives.ps1 -Rid ${{ matrix.rid }}
