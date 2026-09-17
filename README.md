@@ -50,8 +50,6 @@ using var state = XkbX11.CreateState(keymap, xcbConnection, deviceId);
 dotnet test
 ```
 
-Most tests use a self-contained keymap and compose table and only need `libxkbcommon.so.0`; the RMLVO/registry tests skip when xkeyboard-config is not installed.
-
 ## Regenerating the bindings
 
 ```sh

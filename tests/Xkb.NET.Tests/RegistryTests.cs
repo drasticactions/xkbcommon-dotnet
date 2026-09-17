@@ -3,7 +3,8 @@ using Xunit;
 namespace Xkb.Tests;
 
 /// <summary>
-/// Registry tests; they need an installed xkeyboard-config and skip otherwise.
+/// Registry tests; they need libxkbregistry and an installed xkeyboard-config and skip
+/// otherwise (always on the platforms where the package bundles core and compose only).
 /// </summary>
 public class RegistryTests
 {
@@ -16,6 +17,11 @@ public class RegistryTests
         catch (XkbException)
         {
             Assert.Skip("xkeyboard-config is not installed");
+            throw; // unreachable
+        }
+        catch (DllNotFoundException)
+        {
+            Assert.Skip("libxkbregistry is not available on this platform");
             throw; // unreachable
         }
     }

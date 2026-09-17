@@ -1,0 +1,12 @@
+<Project>
+  <!-- browser-wasm: the wasm-tools workload links the static archive into the app. Its file
+       name must stay libxkbcommon.a, the DllImport name the pinvoke table is keyed on.
+       Set XkbSkipNativeReference=true to link your own. -->
+  <PropertyGroup>
+    <XkbWasmLibrary Condition="'$(XkbWasmLibrary)' == ''">$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', '..', 'runtimes', 'browser-wasm', 'native', 'libxkbcommon.a'))</XkbWasmLibrary>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'browser-wasm' and '$(XkbSkipNativeReference)' != 'true' and Exists('$(XkbWasmLibrary)')">
+    <NativeFileReference Include="$(XkbWasmLibrary)" />
+  </ItemGroup>
+</Project>

@@ -5,7 +5,8 @@ namespace Xkb.Native;
 
 /// <summary>
 /// Resolves the DllImport names used by the generated bindings against the
-/// versioned sonames installed by the system xkbcommon packages.
+/// library the package bundles for the platform, or the versioned sonames
+/// installed by the system xkbcommon packages.
 /// </summary>
 internal static class NativeResolver
 {
@@ -13,53 +14,18 @@ internal static class NativeResolver
     [ModuleInitializer]
     internal static void Initialize()
     {
+        // Statically linked platforms: "__Internal" on the Apple mobile TFMs, and the
+        // pinvoke table on browser-wasm. The runtime resolves both without help.
+        if (Libxkbcommon.LibraryName == "__Internal" || OperatingSystem.IsBrowser())
+        {
+            return;
+        }
+
         // Only one DllImportResolver may be registered per assembly, so a
         // single resolver handles every native library this package binds.
         NativeLibrary.SetDllImportResolver(typeof(NativeResolver).Assembly, static (name, assembly, searchPath) =>
         {
-            // Probe explicitly, since the DllImport name alone does not
-            // resolve against the versioned soname.
-            ReadOnlySpan<string> candidates = OperatingSystem.IsWindows()
-                ? name switch
-                {
-                    Libxkbcommon.LibraryName => ["xkbcommon.dll", "libxkbcommon-0.dll", "libxkbcommon.dll"],
-                    LibxkbcommonX11.LibraryName => ["xkbcommon-x11.dll", "libxkbcommon-x11-0.dll"],
-                    Libxkbregistry.LibraryName => ["xkbregistry.dll", "libxkbregistry-0.dll"],
-                    _ => [],
-                }
-                : OperatingSystem.IsMacOS()
-                    ? name switch
-                    {
-                        Libxkbcommon.LibraryName =>
-                        [
-                            "libxkbcommon.0.dylib", "libxkbcommon.dylib",
-                            "/opt/homebrew/lib/libxkbcommon.0.dylib",
-                            "/usr/local/lib/libxkbcommon.0.dylib",
-                            "/opt/local/lib/libxkbcommon.0.dylib",
-                        ],
-                        LibxkbcommonX11.LibraryName =>
-                        [
-                            "libxkbcommon-x11.0.dylib", "libxkbcommon-x11.dylib",
-                            "/opt/homebrew/lib/libxkbcommon-x11.0.dylib",
-                            "/usr/local/lib/libxkbcommon-x11.0.dylib",
-                        ],
-                        Libxkbregistry.LibraryName =>
-                        [
-                            "libxkbregistry.0.dylib", "libxkbregistry.dylib",
-                            "/opt/homebrew/lib/libxkbregistry.0.dylib",
-                            "/usr/local/lib/libxkbregistry.0.dylib",
-                        ],
-                        _ => [],
-                    }
-                    : name switch
-                    {
-                        Libxkbcommon.LibraryName => ["libxkbcommon.so.0", "libxkbcommon.so", "libxkbcommon"],
-                        LibxkbcommonX11.LibraryName => ["libxkbcommon-x11.so.0", "libxkbcommon-x11.so", "libxkbcommon-x11"],
-                        Libxkbregistry.LibraryName => ["libxkbregistry.so.0", "libxkbregistry.so", "libxkbregistry"],
-                        _ => [],
-                    };
-
-            foreach (var candidate in candidates)
+            foreach (var candidate in Candidates(name))
             {
                 if (NativeLibrary.TryLoad(candidate, assembly, searchPath, out var handle))
                 {
@@ -71,4 +37,63 @@ internal static class NativeResolver
         });
     }
 #pragma warning restore CA2255
+
+    /// <summary>
+    /// Library names probed in order for a DllImport name. The packaged binary is listed
+    /// first so it wins over a system copy; the DllImport name alone does not resolve
+    /// against a versioned soname or dylib. <c>TestHelpers</c> in the tests duplicates the
+    /// X11 list.
+    /// </summary>
+    /// <remarks>
+    /// The absolute macOS paths cover Homebrew (arm64 and x64) and MacPorts, none of which
+    /// are on dlopen's default search path. Android must be tested before the generic Unix
+    /// branch; the package ships an unversioned <c>libxkbcommon.so</c> there and nothing for
+    /// X11 or the registry.
+    /// </remarks>
+    internal static string[] Candidates(string name) =>
+        OperatingSystem.IsWindows()
+            ? name switch
+            {
+                Libxkbcommon.LibraryName => ["xkbcommon.dll", "libxkbcommon-0.dll", "libxkbcommon.dll"],
+                LibxkbcommonX11.LibraryName => ["xkbcommon-x11.dll", "libxkbcommon-x11-0.dll"],
+                Libxkbregistry.LibraryName => ["xkbregistry.dll", "libxkbregistry-0.dll"],
+                _ => [],
+            }
+            : OperatingSystem.IsMacOS()
+                ? name switch
+                {
+                    Libxkbcommon.LibraryName =>
+                    [
+                        "libxkbcommon.0.dylib", "libxkbcommon.dylib",
+                        "/opt/homebrew/lib/libxkbcommon.0.dylib",
+                        "/usr/local/lib/libxkbcommon.0.dylib",
+                        "/opt/local/lib/libxkbcommon.0.dylib",
+                    ],
+                    LibxkbcommonX11.LibraryName =>
+                    [
+                        "libxkbcommon-x11.0.dylib", "libxkbcommon-x11.dylib",
+                        "/opt/homebrew/lib/libxkbcommon-x11.0.dylib",
+                        "/usr/local/lib/libxkbcommon-x11.0.dylib",
+                    ],
+                    Libxkbregistry.LibraryName =>
+                    [
+                        "libxkbregistry.0.dylib", "libxkbregistry.dylib",
+                        "/opt/homebrew/lib/libxkbregistry.0.dylib",
+                        "/usr/local/lib/libxkbregistry.0.dylib",
+                    ],
+                    _ => [],
+                }
+                : OperatingSystem.IsAndroid()
+                    ? name switch
+                    {
+                        Libxkbcommon.LibraryName => ["libxkbcommon.so"],
+                        _ => [],
+                    }
+                    : name switch
+                    {
+                        Libxkbcommon.LibraryName => ["libxkbcommon.so.0", "libxkbcommon.so", "libxkbcommon"],
+                        LibxkbcommonX11.LibraryName => ["libxkbcommon-x11.so.0", "libxkbcommon-x11.so", "libxkbcommon-x11"],
+                        Libxkbregistry.LibraryName => ["libxkbregistry.so.0", "libxkbregistry.so", "libxkbregistry"],
+                        _ => [],
+                    };
 }

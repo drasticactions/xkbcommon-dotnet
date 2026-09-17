@@ -4,8 +4,8 @@ using Xunit;
 namespace Xkb.Tests;
 
 /// <summary>
-/// Tests of the generated bindings that need no keymap data, only an
-/// installed libxkbcommon.so.0.
+/// Tests of the generated bindings that need no keymap data, only a
+/// libxkbcommon (bundled or installed).
 /// </summary>
 public class NativeBindingTests
 {
@@ -25,7 +25,7 @@ public class NativeBindingTests
     [Fact]
     public void Libxkbcommon_ResolvesNativeLibrary()
     {
-        // Any call proves the DllImportResolver found libxkbcommon.so.0.
+        // Any call proves the runtime (or the DllImportResolver) found libxkbcommon.
         Assert.Equal((uint)'a', Libxkbcommon.xkb_keysym_to_utf32((uint)Libxkbcommon.XKB_KEY_a));
     }
 
@@ -41,6 +41,8 @@ public class NativeBindingTests
     [Fact]
     public unsafe void Libxkbregistry_ResolvesNativeLibrary()
     {
+        Assert.SkipUnless(TestHelpers.RegistryAvailable, "libxkbregistry is not available on this platform");
+
         var context = Libxkbregistry.rxkb_context_new(rxkb_context_flags.RXKB_CONTEXT_NO_FLAGS);
         Assert.True(context is not null);
         Libxkbregistry.rxkb_context_unref(context);
@@ -49,11 +51,29 @@ public class NativeBindingTests
     [Fact]
     public void LibxkbcommonX11_LibraryIsLoadable()
     {
-        // No X server in the test environment; just prove the soname the
-        // resolver probes for is present and loadable.
-        Assert.SkipWhen(
-            !System.Runtime.InteropServices.NativeLibrary.TryLoad("libxkbcommon-x11.so.0", out var handle),
-            "libxkbcommon-x11.so.0 is not installed");
-        System.Runtime.InteropServices.NativeLibrary.Free(handle);
+        // No X server in the test environment; just prove the library the
+        // resolver probes for is present and loadable where one is expected.
+        Assert.SkipUnless(TestHelpers.X11Available, "libxkbcommon-x11 is not available on this platform");
+    }
+
+    [Fact]
+    public void FreeShim_IsPresent()
+    {
+        // The one test that proves xkb_dotnet_free shipped in the payload: every bundled
+        // build (Windows, macOS, Apple mobile, Android, browser) must free through the
+        // shim; only distro Linux, which is not bundled, takes the dynamic free fallback.
+        using var context = XkbContext.Create(XkbContextFlags.NoDefaultIncludes);
+        using var keymap = context.CreateKeymapFromString(TestKeymap.Text);
+        var text = keymap.AsString();
+        Assert.Contains("xkb_keymap", text);
+
+        if (OperatingSystem.IsLinux() || OperatingSystem.IsFreeBSD())
+        {
+            Assert.True(Libc.UsedFallback, "expected the system libxkbcommon without the shim to engage the free fallback");
+        }
+        else
+        {
+            Assert.False(Libc.UsedFallback, "expected the bundled libxkbcommon to export xkb_dotnet_free");
+        }
     }
 }

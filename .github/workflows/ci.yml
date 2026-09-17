@@ -3,36 +3,245 @@ name: CI
 on:
   push:
     branches: [main, master]
+    tags: ['v*']
   pull_request:
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build-test:
+  # ---------------------------------------------------------------------------
+  # Native payloads. Every leg that can also run the desktop test suite against
+  # the binary it just built does so, since that is what ships in the package.
+  # The device and browser suites are not run here; see eng/test-natives.sh.
+  # ---------------------------------------------------------------------------
+  windows:
+    name: Windows (${{ matrix.rid }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: windows-11-arm
+            rid: win-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade meson ninja
+      - name: Install bison (win_bison)
+        # libxkbcommon needs bison >= 3.6 on every build host. The x86 binary
+        # runs under emulation on the arm64 runner.
+        run: choco install -y winflexbison3
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.rid == 'win-arm64' && 'arm64' || 'x64' }}
+      - name: Build libxkbcommon
+        shell: pwsh
+        run: ./eng/build-natives.ps1 -Rid ${{ matrix.rid }}
+      - name: Build
+        run: dotnet build -c Release
+      - name: Check the tests see the freshly built libxkbcommon
+        shell: bash
+        run: ls tests/Xkb.NET.Tests/bin/Release/net10.0/ | grep -q 'xkbcommon.dll'
+      - name: Test
+        run: dotnet test -c Release --no-build --logger "console;verbosity=normal"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.rid }}
+          path: runtimes/${{ matrix.rid }}/native/*
+          if-no-files-found: error
+
+  linux:
+    # Linux is not bundled: the distro library is used. This is the only leg
+    # where the registry, X11 and RMLVO tests run.
+    name: Linux (distro libxkbcommon)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
-
+          dotnet-version: 10.0.x
       - name: Install xkbcommon libraries and keymap data
         run: |
           sudo apt-get update
           sudo apt-get install -y libxkbcommon0 libxkbcommon-x11-0 libxkbregistry0 xkb-data
-
       - name: Build
         run: dotnet build -c Release
-
       - name: Test
         run: dotnet test -c Release --no-build --logger "console;verbosity=normal"
 
+  android:
+    name: Android natives
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade meson ninja
+      - name: Build libxkbcommon
+        # The Ubuntu image exports ANDROID_NDK_LATEST_HOME; ANDROID_HOME/ndk is the fallback.
+        run: ANDROID_NDK_HOME="${ANDROID_NDK_LATEST_HOME:-}" sh eng/build-natives.sh android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-android
+          path: runtimes/android-*/native/*
+          if-no-files-found: error
+
+  wasm:
+    name: WebAssembly natives
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade meson ninja
+      # The workload carries the Emscripten release .NET 10 links with; the
+      # script picks it up from DOTNET_ROOT and refuses any other version.
+      - run: dotnet workload install wasm-tools
+      - name: Build libxkbcommon
+        run: sh eng/build-natives.sh wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-browser-wasm
+          path: runtimes/browser-wasm/native/*
+          if-no-files-found: error
+
+  macos:
+    name: macOS and Apple natives
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Select the newest Xcode
+        run: |
+          set -eu
+          xcode=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+      - name: Install meson, ninja and bison
+        # macOS ships bison 2.3; libxkbcommon needs >= 3.6.
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+        run: |
+          brew install meson ninja bison
+          echo "$(brew --prefix bison)/bin" >> "$GITHUB_PATH"
+      - name: Build libxkbcommon (macOS, universal)
+        run: sh eng/build-natives.sh osx
+      - name: Check both architectures are in the binary
+        run: |
+          set -eu
+          lipo -info runtimes/osx/native/libxkbcommon.0.dylib | tee /dev/stderr | grep -q arm64
+          lipo -info runtimes/osx/native/libxkbcommon.0.dylib | grep -q x86_64
+      - name: Build libxkbcommon (iOS, tvOS, Mac Catalyst)
+        run: sh eng/build-natives.sh apple
+      - run: dotnet workload install ios tvos maccatalyst
+      - name: Build
+        run: dotnet build -c Release
+      - name: Check the tests see the freshly built libxkbcommon
+        run: ls tests/Xkb.NET.Tests/bin/Release/net10.0/ | grep -q 'libxkbcommon.0.dylib'
+      - name: Test
+        run: dotnet test -c Release --no-build --logger "console;verbosity=normal"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-osx
+          path: runtimes/osx/native/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcframework
+          path: xcframeworks/
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Package: runs on macOS because the Apple TFMs need those workloads.
+  # ---------------------------------------------------------------------------
+  pack:
+    name: Pack with every runtime
+    needs: [windows, linux, android, wasm, macos]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet workload install ios tvos maccatalyst
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-*
+          path: staging
+      - uses: actions/download-artifact@v4
+        with:
+          name: xcframework
+          path: xcframeworks
+      - name: Lay the runtimes out
+        run: |
+          set -eu
+          for rid in win-x64 win-arm64 osx browser-wasm; do
+            mkdir -p "runtimes/$rid/native"
+            cp -a "staging/native-$rid/." "runtimes/$rid/native/"
+          done
+          # The android artifact keeps its runtimes/<rid>/native layout.
+          cp -a staging/native-android/. runtimes/
+          find runtimes xcframeworks -type f | sort
       - name: Pack
         run: dotnet pack src/Xkb.NET/Xkb.NET.csproj -c Release -o artifacts
-
-      - name: Upload package artifacts
-        uses: actions/upload-artifact@v4
+      - name: Check the package carries every payload
+        run: |
+          set -eu
+          pkg=$(ls artifacts/*.nupkg | head -1)
+          unzip -l "$pkg" | grep -E 'runtimes/|xcframeworks/|buildTransitive/|lib/' | sort
+          for path in \
+            runtimes/win-x64/native/xkbcommon.dll \
+            runtimes/win-arm64/native/xkbcommon.dll \
+            runtimes/osx/native/libxkbcommon.0.dylib \
+            runtimes/android-arm64/native/libxkbcommon.so \
+            runtimes/android-x64/native/libxkbcommon.so \
+            runtimes/browser-wasm/native/libxkbcommon.a \
+            xcframeworks/xkbcommon.xcframework/Info.plist \
+            xcframeworks/xkbcommon.xcframework/ios-arm64/libxkbcommon.a \
+            xcframeworks/xkbcommon.xcframework/ios-arm64_x86_64-simulator/libxkbcommon.a \
+            xcframeworks/xkbcommon.xcframework/tvos-arm64/libxkbcommon.a \
+            xcframeworks/xkbcommon.xcframework/tvos-arm64_x86_64-simulator/libxkbcommon.a \
+            xcframeworks/xkbcommon.xcframework/ios-arm64_x86_64-maccatalyst/libxkbcommon.a \
+            buildTransitive/net10.0/xkbcommon-dotnet.targets \
+            buildTransitive/net10.0-ios26.0/xkbcommon-dotnet.targets \
+            buildTransitive/net10.0-tvos26.0/xkbcommon-dotnet.targets \
+            buildTransitive/net10.0-maccatalyst26.0/xkbcommon-dotnet.targets \
+            lib/net10.0/xkbcommon-dotnet.dll \
+            lib/net10.0-ios26.0/xkbcommon-dotnet.dll \
+            lib/net10.0-tvos26.0/xkbcommon-dotnet.dll \
+            lib/net10.0-maccatalyst26.0/xkbcommon-dotnet.dll; do
+            unzip -l "$pkg" | grep -q " $path\$" || { echo "$pkg lacks $path" >&2; exit 1; }
+          done
+      - uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
-          path: artifacts/*
+          path: artifacts/*.nupkg
+          if-no-files-found: error

@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFramework />
+    <!-- The Apple TFMs exist only to switch LibraryName to "__Internal" (static linking);
+         they are built by default on macOS only so Linux and Windows need no Apple workloads. -->
+    <XkbIncludeAppleTargets Condition="'$(XkbIncludeAppleTargets)' == ''">$([MSBuild]::IsOSPlatform('OSX'))</XkbIncludeAppleTargets>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(XkbIncludeAppleTargets)' == 'true'">$(TargetFrameworks);net10.0-ios26.0;net10.0-tvos26.0;net10.0-maccatalyst26.0</TargetFrameworks>
     <RootNamespace>Xkb</RootNamespace>
     <AssemblyName>xkbcommon-dotnet</AssemblyName>
     <PackageId>xkbcommon-dotnet</PackageId>
@@ -9,11 +15,27 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsAotCompatible>true</IsAotCompatible>
     <NoWarn>$(NoWarn);CS8981</NoWarn>
+    <RuntimesDir>$(MSBuildThisFileDirectory)../../runtimes/</RuntimesDir>
+    <XcframeworksDir>$(MSBuildThisFileDirectory)../../xcframeworks/</XcframeworksDir>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../../README.md" Pack="true" PackagePath="/" />
-    <None Include="$(MSBuildThisFileDirectory)../../runtimes/**/*" Pack="true" PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(RuntimesDir)**/*" Pack="true" PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(XcframeworksDir)**/*" Pack="true" PackagePath="xcframeworks/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Remove="buildTransitive/**" />
+    <None Include="buildTransitive/net10.0/xkbcommon-dotnet.targets" Pack="true" PackagePath="buildTransitive/net10.0/" />
+    <None Include="buildTransitive/apple/xkbcommon-dotnet.targets" Pack="true" PackagePath="buildTransitive/net10.0-ios26.0/;buildTransitive/net10.0-tvos26.0/;buildTransitive/net10.0-maccatalyst26.0/" />
+  </ItemGroup>
+
+  <!-- Copy the freshly built runtime for the host into the output so projects that reference
+       this one (the tests) run against the bundled binary. Linux is not bundled. -->
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <None Update="$(RuntimesDir)win-x64/native/*.dll" Condition="'$(PROCESSOR_ARCHITECTURE)' != 'ARM64'" CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+    <None Update="$(RuntimesDir)win-arm64/native/*.dll" Condition="'$(PROCESSOR_ARCHITECTURE)' == 'ARM64'" CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <None Update="$(RuntimesDir)osx/native/*.dylib" CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

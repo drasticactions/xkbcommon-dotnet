@@ -11,399 +11,399 @@ namespace Xkb.Native;
 
 public static unsafe partial class Libxkbcommon
 {
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_rmlvo_builder *")]
     public static extern xkb_rmlvo_builder* xkb_rmlvo_builder_new([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* rules, [NativeTypeName("const char *")] sbyte* model, [NativeTypeName("enum xkb_rmlvo_builder_flags")] xkb_rmlvo_builder_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("_Bool")]
     public static extern byte xkb_rmlvo_builder_append_layout([NativeTypeName("struct xkb_rmlvo_builder *")] xkb_rmlvo_builder* rmlvo, [NativeTypeName("const char *")] sbyte* layout, [NativeTypeName("const char *")] sbyte* variant, [NativeTypeName("const char *const *")] sbyte** options, [NativeTypeName("size_t")] nuint options_len);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("_Bool")]
     public static extern byte xkb_rmlvo_builder_append_option([NativeTypeName("struct xkb_rmlvo_builder *")] xkb_rmlvo_builder* rmlvo, [NativeTypeName("const char *")] sbyte* option);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_rmlvo_builder *")]
     public static extern xkb_rmlvo_builder* xkb_rmlvo_builder_ref([NativeTypeName("struct xkb_rmlvo_builder *")] xkb_rmlvo_builder* rmlvo);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_rmlvo_builder_unref([NativeTypeName("struct xkb_rmlvo_builder *")] xkb_rmlvo_builder* rmlvo);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("_Bool")]
     public static extern byte xkb_components_names_from_rules([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const struct xkb_rule_names *")] xkb_rule_names* rmlvo_in, [NativeTypeName("struct xkb_rule_names *")] xkb_rule_names* rmlvo_out, [NativeTypeName("struct xkb_component_names *")] xkb_component_names* components_out);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_keysym_get_name([NativeTypeName("xkb_keysym_t")] uint keysym, [NativeTypeName("char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint size);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_keysym_from_name([NativeTypeName("const char *")] sbyte* name, [NativeTypeName("enum xkb_keysym_flags")] xkb_keysym_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_keysym_to_utf8([NativeTypeName("xkb_keysym_t")] uint keysym, [NativeTypeName("char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint size);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("uint32_t")]
     public static extern uint xkb_keysym_to_utf32([NativeTypeName("xkb_keysym_t")] uint keysym);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_utf32_to_keysym([NativeTypeName("uint32_t")] uint ucs);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_keysym_to_upper([NativeTypeName("xkb_keysym_t")] uint ks);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_keysym_to_lower([NativeTypeName("xkb_keysym_t")] uint ks);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_context *")]
     public static extern xkb_context* xkb_context_new([NativeTypeName("enum xkb_context_flags")] xkb_context_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_context *")]
     public static extern xkb_context* xkb_context_ref([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_unref([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_set_user_data([NativeTypeName("struct xkb_context *")] xkb_context* context, void* user_data);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void* xkb_context_get_user_data([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_context_include_path_append([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* path);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_context_include_path_append_default([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_context_include_path_reset_defaults([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_include_path_clear([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("unsigned int")]
     public static extern uint xkb_context_num_include_paths([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_context_include_path_get([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("unsigned int")] uint index);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_set_log_level([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("enum xkb_log_level")] xkb_log_level level);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_log_level")]
     public static extern xkb_log_level xkb_context_get_log_level([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_set_log_verbosity([NativeTypeName("struct xkb_context *")] xkb_context* context, int verbosity);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_context_get_log_verbosity([NativeTypeName("struct xkb_context *")] xkb_context* context);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_context_set_log_fn([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("void (*)(struct xkb_context *, enum xkb_log_level, const char *, struct __va_list_tag *)")] delegate* unmanaged[Cdecl]<xkb_context*, xkb_log_level, sbyte*, __va_list_tag*, void> log_fn);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_rmlvo([NativeTypeName("const struct xkb_rmlvo_builder *")] xkb_rmlvo_builder* rmlvo, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_names([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const struct xkb_rule_names *")] xkb_rule_names* names, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_names2([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const struct xkb_rule_names *")] xkb_rule_names* names, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_file([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("FILE *")] _IO_FILE* file, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_string([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* @string, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_new_from_buffer([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint length, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_compile_flags")] xkb_keymap_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_keymap_ref([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_keymap_unref([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("char *")]
     public static extern sbyte* xkb_keymap_get_as_string([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("char *")]
     public static extern sbyte* xkb_keymap_get_as_string2([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("enum xkb_keymap_format")] xkb_keymap_format format, [NativeTypeName("enum xkb_keymap_serialize_flags")] xkb_keymap_serialize_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keycode_t")]
     public static extern uint xkb_keymap_min_keycode([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keycode_t")]
     public static extern uint xkb_keymap_max_keycode([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_keymap_key_for_each([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keymap_key_iter_t")] delegate* unmanaged[Cdecl]<xkb_keymap*, uint, void*, void> iter, void* data);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_keymap_key_get_name([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keycode_t")]
     public static extern uint xkb_keymap_key_by_name([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_index_t")]
     public static extern uint xkb_keymap_num_mods([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_keymap_mod_get_name([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_mod_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_index_t")]
     public static extern uint xkb_keymap_mod_get_index([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_keymap_mod_get_mask([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_keymap_mod_get_mask2([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_mod_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_layout_index_t")]
     public static extern uint xkb_keymap_num_layouts([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_keymap_layout_get_name([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_layout_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_layout_index_t")]
     public static extern uint xkb_keymap_layout_get_index([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_led_index_t")]
     public static extern uint xkb_keymap_num_leds([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_keymap_led_get_name([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_led_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_led_index_t")]
     public static extern uint xkb_keymap_led_get_index([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_layout_index_t")]
     public static extern uint xkb_keymap_num_layouts_for_key([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_level_index_t")]
     public static extern uint xkb_keymap_num_levels_for_key([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_layout_index_t")] uint layout);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("size_t")]
     public static extern nuint xkb_keymap_key_get_mods_for_level([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_layout_index_t")] uint layout, [NativeTypeName("xkb_level_index_t")] uint level, [NativeTypeName("xkb_mod_mask_t *")] uint* masks_out, [NativeTypeName("size_t")] nuint masks_size);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_keymap_key_get_syms_by_level([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_layout_index_t")] uint layout, [NativeTypeName("xkb_level_index_t")] uint level, [NativeTypeName("const xkb_keysym_t **")] uint** syms_out);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_keymap_key_repeats([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_state *")]
     public static extern xkb_state* xkb_state_new([NativeTypeName("struct xkb_keymap *")] xkb_keymap* keymap);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_state *")]
     public static extern xkb_state* xkb_state_ref([NativeTypeName("struct xkb_state *")] xkb_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_state_unref([NativeTypeName("struct xkb_state *")] xkb_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_keymap *")]
     public static extern xkb_keymap* xkb_state_get_keymap([NativeTypeName("struct xkb_state *")] xkb_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_state_component")]
     public static extern xkb_state_component xkb_state_update_key([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("enum xkb_key_direction")] xkb_key_direction direction);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_state_component")]
     public static extern xkb_state_component xkb_state_update_latched_locked([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_mod_mask_t")] uint affect_latched_mods, [NativeTypeName("xkb_mod_mask_t")] uint latched_mods, [NativeTypeName("_Bool")] byte affect_latched_layout, [NativeTypeName("int32_t")] int latched_layout, [NativeTypeName("xkb_mod_mask_t")] uint affect_locked_mods, [NativeTypeName("xkb_mod_mask_t")] uint locked_mods, [NativeTypeName("_Bool")] byte affect_locked_layout, [NativeTypeName("int32_t")] int locked_layout);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_state_component")]
     public static extern xkb_state_component xkb_state_update_mask([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_mod_mask_t")] uint depressed_mods, [NativeTypeName("xkb_mod_mask_t")] uint latched_mods, [NativeTypeName("xkb_mod_mask_t")] uint locked_mods, [NativeTypeName("xkb_layout_index_t")] uint depressed_layout, [NativeTypeName("xkb_layout_index_t")] uint latched_layout, [NativeTypeName("xkb_layout_index_t")] uint locked_layout);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_key_get_syms([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("const xkb_keysym_t **")] uint** syms_out);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_key_get_utf8([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint size);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("uint32_t")]
     public static extern uint xkb_state_key_get_utf32([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_state_key_get_one_sym([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_layout_index_t")]
     public static extern uint xkb_state_key_get_layout([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_level_index_t")]
     public static extern uint xkb_state_key_get_level([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_layout_index_t")] uint layout);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_state_serialize_mods([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("enum xkb_state_component")] xkb_state_component components);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_layout_index_t")]
     public static extern uint xkb_state_serialize_layout([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("enum xkb_state_component")] xkb_state_component components);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_name_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("enum xkb_state_component")] xkb_state_component type);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_names_are_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("enum xkb_state_component")] xkb_state_component type, [NativeTypeName("enum xkb_state_match")] xkb_state_match match, __arglist);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_index_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_mod_index_t")] uint idx, [NativeTypeName("enum xkb_state_component")] xkb_state_component type);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_indices_are_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("enum xkb_state_component")] xkb_state_component type, [NativeTypeName("enum xkb_state_match")] xkb_state_match match, __arglist);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_state_key_get_consumed_mods2([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("enum xkb_consumed_mode")] xkb_consumed_mode mode);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_state_key_get_consumed_mods([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_index_is_consumed2([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_mod_index_t")] uint idx, [NativeTypeName("enum xkb_consumed_mode")] xkb_consumed_mode mode);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_mod_index_is_consumed([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_mod_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_mod_mask_t")]
     public static extern uint xkb_state_mod_mask_remove_consumed([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_keycode_t")] uint key, [NativeTypeName("xkb_mod_mask_t")] uint mask);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_layout_name_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("enum xkb_state_component")] xkb_state_component type);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_layout_index_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_layout_index_t")] uint idx, [NativeTypeName("enum xkb_state_component")] xkb_state_component type);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_led_name_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("const char *")] sbyte* name);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_state_led_index_is_active([NativeTypeName("struct xkb_state *")] xkb_state* state, [NativeTypeName("xkb_led_index_t")] uint idx);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table *")]
     public static extern xkb_compose_table* xkb_compose_table_new_from_locale([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* locale, [NativeTypeName("enum xkb_compose_compile_flags")] xkb_compose_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table *")]
     public static extern xkb_compose_table* xkb_compose_table_new_from_file([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("FILE *")] _IO_FILE* file, [NativeTypeName("const char *")] sbyte* locale, [NativeTypeName("enum xkb_compose_format")] xkb_compose_format format, [NativeTypeName("enum xkb_compose_compile_flags")] xkb_compose_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table *")]
     public static extern xkb_compose_table* xkb_compose_table_new_from_buffer([NativeTypeName("struct xkb_context *")] xkb_context* context, [NativeTypeName("const char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint length, [NativeTypeName("const char *")] sbyte* locale, [NativeTypeName("enum xkb_compose_format")] xkb_compose_format format, [NativeTypeName("enum xkb_compose_compile_flags")] xkb_compose_compile_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table *")]
     public static extern xkb_compose_table* xkb_compose_table_ref([NativeTypeName("struct xkb_compose_table *")] xkb_compose_table* table);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_compose_table_unref([NativeTypeName("struct xkb_compose_table *")] xkb_compose_table* table);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const xkb_keysym_t *")]
     public static extern uint* xkb_compose_table_entry_sequence([NativeTypeName("struct xkb_compose_table_entry *")] xkb_compose_table_entry* entry, [NativeTypeName("size_t *")] nuint* sequence_length);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_compose_table_entry_keysym([NativeTypeName("struct xkb_compose_table_entry *")] xkb_compose_table_entry* entry);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
     public static extern sbyte* xkb_compose_table_entry_utf8([NativeTypeName("struct xkb_compose_table_entry *")] xkb_compose_table_entry* entry);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table_iterator *")]
     public static extern xkb_compose_table_iterator* xkb_compose_table_iterator_new([NativeTypeName("struct xkb_compose_table *")] xkb_compose_table* table);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_compose_table_iterator_free([NativeTypeName("struct xkb_compose_table_iterator *")] xkb_compose_table_iterator* iter);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table_entry *")]
     public static extern xkb_compose_table_entry* xkb_compose_table_iterator_next([NativeTypeName("struct xkb_compose_table_iterator *")] xkb_compose_table_iterator* iter);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_state *")]
     public static extern xkb_compose_state* xkb_compose_state_new([NativeTypeName("struct xkb_compose_table *")] xkb_compose_table* table, [NativeTypeName("enum xkb_compose_state_flags")] xkb_compose_state_flags flags);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_state *")]
     public static extern xkb_compose_state* xkb_compose_state_ref([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_compose_state_unref([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("struct xkb_compose_table *")]
     public static extern xkb_compose_table* xkb_compose_state_get_compose_table([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_compose_feed_result")]
     public static extern xkb_compose_feed_result xkb_compose_state_feed([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state, [NativeTypeName("xkb_keysym_t")] uint keysym);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern void xkb_compose_state_reset([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("enum xkb_compose_status")]
     public static extern xkb_compose_status xkb_compose_state_get_status([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     public static extern int xkb_compose_state_get_utf8([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state, [NativeTypeName("char *")] sbyte* buffer, [NativeTypeName("size_t")] nuint size);
 
-    [DllImport("libxkbcommon", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+    [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
     [return: NativeTypeName("xkb_keysym_t")]
     public static extern uint xkb_compose_state_get_one_sym([NativeTypeName("struct xkb_compose_state *")] xkb_compose_state* state);
 

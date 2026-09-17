@@ -1,3 +1,4 @@
+using System.Runtime.Versioning;
 using Xkb.Native;
 
 namespace Xkb;
@@ -7,6 +8,17 @@ namespace Xkb;
 /// extension (libxkbcommon-x11). The xcb connection is passed as the raw
 /// <c>xcb_connection_t*</c> pointer, since no xcb binding is involved.
 /// </summary>
+/// <remarks>
+/// Needs libxkbcommon-x11 and an X server, which only distro packages provide. The
+/// libxkbcommon builds the package bundles for iOS, tvOS, Mac Catalyst, Android and
+/// browser-wasm carry only the core and compose API, so on those platforms every member
+/// fails with a <see cref="DllNotFoundException"/>.
+/// </remarks>
+[UnsupportedOSPlatform("ios")]
+[UnsupportedOSPlatform("tvos")]
+[UnsupportedOSPlatform("maccatalyst")]
+[UnsupportedOSPlatform("android")]
+[UnsupportedOSPlatform("browser")]
 public static unsafe class XkbX11
 {
     /// <summary>

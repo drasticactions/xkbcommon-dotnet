@@ -1,0 +1,11 @@
+<Project>
+  <!-- iOS, tvOS and Mac Catalyst: libxkbcommon is linked statically into the app from the
+       xcframework the package carries. Set XkbSkipNativeReference=true to link your own. -->
+  <PropertyGroup>
+    <XkbXcframeworkPath Condition="'$(XkbXcframeworkPath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', '..', 'xcframeworks', 'xkbcommon.xcframework'))</XkbXcframeworkPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(XkbSkipNativeReference)' != 'true' and Exists('$(XkbXcframeworkPath)')">
+    <NativeReference Include="$(XkbXcframeworkPath)" Kind="Static" ForceLoad="true" SmartLink="true" IsCxx="false" />
+  </ItemGroup>
+</Project>

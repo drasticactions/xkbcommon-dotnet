@@ -482,4 +482,5 @@ $RECYCLE.BIN/
 
 # Native payloads built by eng/build-natives.*
 /runtimes/
+/xcframeworks/
 CLAUDE.md

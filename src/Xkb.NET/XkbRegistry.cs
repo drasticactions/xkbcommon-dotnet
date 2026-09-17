@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Xkb.Native;
 
 namespace Xkb;
@@ -8,6 +9,11 @@ namespace Xkb;
 /// options available from the installed xkeyboard-config rulesets, for
 /// presenting keyboard-configuration choices to users.
 /// </summary>
+[UnsupportedOSPlatform("ios")]
+[UnsupportedOSPlatform("tvos")]
+[UnsupportedOSPlatform("maccatalyst")]
+[UnsupportedOSPlatform("android")]
+[UnsupportedOSPlatform("browser")]
 public sealed unsafe class XkbRegistry : IDisposable
 {
     // The bindings are generated from the 1.13.2 headers, but the installed

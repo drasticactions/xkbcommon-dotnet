@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework />
+    <!-- Each net10.0-ios<version> binds to one Xcode release; eng/test-natives.sh derives it. -->
+    <XkbApplePlatformVersion Condition="'$(XkbApplePlatformVersion)' == ''">26.5</XkbApplePlatformVersion>
+    <TargetFrameworks>net10.0-android;net10.0-ios$(XkbApplePlatformVersion);net10.0-tvos$(XkbApplePlatformVersion);net10.0-maccatalyst$(XkbApplePlatformVersion)</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <ApplicationId>com.drasticactions.xkbcommon.tests</ApplicationId>
+    <ApplicationTitle>xkbcommon Tests</ApplicationTitle>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <!-- Trim SDK assemblies only: the reflection runner needs the test assembly intact. -->
+    <MtouchLink>SdkOnly</MtouchLink>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+    <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios')) or $(TargetFramework.Contains('-tvos')) or $(TargetFramework.Contains('-maccatalyst'))">
+    <SupportedOSPlatformVersion Condition="!$(TargetFramework.Contains('-maccatalyst'))">15.0</SupportedOSPlatformVersion>
+    <UseInterpreter>true</UseInterpreter>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+    <Compile Remove="Apple/**" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(TargetFramework.Contains('-android'))">
+    <Compile Remove="Android/**" />
+  </ItemGroup>
+
+</Project>

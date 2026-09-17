@@ -3,37 +3,66 @@ using System.Runtime.InteropServices;
 namespace Xkb.Native;
 
 /// <summary>
-/// Minimal libc access.
+/// Frees memory that libxkbcommon hands over to the caller (e.g. <c>xkb_keymap_get_as_string</c>).
 /// </summary>
 internal static unsafe class Libc
 {
-    private static readonly delegate* unmanaged[Cdecl]<void*, void> _free;
+    private static volatile bool _useFallback;
+    private static delegate* unmanaged[Cdecl]<void*, void> _fallbackFree;
 
-    static Libc()
+    /// <summary>
+    /// True once <see cref="Free"/> has switched to the dynamic <c>free</c> lookup because the
+    /// loaded libxkbcommon does not export <see cref="Libxkbcommon.xkb_dotnet_free"/>. Bundled
+    /// builds always carry the shim, so this only turns true against a system library.
+    /// </summary>
+    internal static bool UsedFallback => _useFallback;
+
+    /// <summary>Frees memory allocated by libxkbcommon.</summary>
+    internal static void Free(void* ptr)
     {
-        nint address = 0;
+        if (!_useFallback)
+        {
+            try
+            {
+                Libxkbcommon.xkb_dotnet_free(ptr);
+                return;
+            }
+            catch (EntryPointNotFoundException)
+            {
+                // A libxkbcommon without the package's shim (distro Linux, Homebrew, ...).
+                _useFallback = true;
+            }
+        }
+
+        FallbackFree()(ptr);
+    }
+
+    private static delegate* unmanaged[Cdecl]<void*, void> FallbackFree()
+    {
+        if (_fallbackFree is null)
+        {
+            _fallbackFree = (delegate* unmanaged[Cdecl]<void*, void>)FindFree();
+        }
+
+        return _fallbackFree;
+    }
+
+    // Resolved lazily so the statically linked platforms (Apple mobile, browser-wasm), where
+    // NativeLibrary.GetMainProgramHandle is unavailable, never reach this code.
+    private static nint FindFree()
+    {
         if (OperatingSystem.IsWindows())
         {
             foreach (var candidate in new[] { "ucrtbase", "api-ms-win-crt-heap-l1-1-0", "msvcrt", "xkbcommon" })
             {
                 if (NativeLibrary.TryLoad(candidate, out var module) &&
-                    NativeLibrary.TryGetExport(module, "free", out address))
+                    NativeLibrary.TryGetExport(module, "free", out var address))
                 {
-                    break;
+                    return address;
                 }
-
-                address = 0;
             }
         }
 
-        if (address == 0)
-        {
-            address = NativeLibrary.GetExport(NativeLibrary.GetMainProgramHandle(), "free");
-        }
-
-        _free = (delegate* unmanaged[Cdecl]<void*, void>)address;
+        return NativeLibrary.GetExport(NativeLibrary.GetMainProgramHandle(), "free");
     }
-
-    /// <summary>Frees memory allocated by the C library's malloc.</summary>
-    internal static void Free(void* ptr) => _free(ptr);
 }

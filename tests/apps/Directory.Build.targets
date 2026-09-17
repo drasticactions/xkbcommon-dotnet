@@ -1,0 +1,4 @@
+<Project>
+  <!-- xunit.v3 insists on its own entry point or a test SDK; the host apps supply their own Main. -->
+  <Target Name="_XunitValidateBuild" />
+</Project>

@@ -8,6 +8,13 @@
         "ClangSharpPInvokeGenerator"
       ],
       "rollForward": false
+    },
+    "microsoft.dotnet.xharness.cli": {
+      "version": "11.0.0-prerelease.26466.1",
+      "commands": [
+        "xharness"
+      ],
+      "rollForward": false
     }
   }
 }

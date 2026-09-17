@@ -33,6 +33,13 @@ test -f src/Xkb.NET/Native/Generated/registry/Libxkbregistry.cs
 sed -i 's/public const xkb_keymap_format XKB_KEYMAP_USE_ORIGINAL_FORMAT = ((xkb_keymap_format)(-1));/public const xkb_keymap_format XKB_KEYMAP_USE_ORIGINAL_FORMAT = unchecked((xkb_keymap_format)(-1));/' \
   src/Xkb.NET/Native/Generated/xkbcommon/Libxkbcommon.cs
 
+# - The DllImports name the library through the LibraryName constant of each
+#   partial class (*.Manual.cs) instead of the literal --library-path, so the
+#   iOS/tvOS/Mac Catalyst builds can switch libxkbcommon to "__Internal".
+find src/Xkb.NET/Native/Generated/xkbcommon -name '*.cs' -exec sed -i 's/\[DllImport("libxkbcommon",/[DllImport(LibraryName,/' {} \;
+find src/Xkb.NET/Native/Generated/x11 -name '*.cs' -exec sed -i 's/\[DllImport("libxkbcommon-x11",/[DllImport(LibraryName,/' {} \;
+find src/Xkb.NET/Native/Generated/registry -name '*.cs' -exec sed -i 's/\[DllImport("libxkbregistry",/[DllImport(LibraryName,/' {} \;
+
 # The foreign types FILE (_IO_FILE), va_list (__va_list_tag) and libxcb's
 # xcb_connection_t are referenced by signatures but deliberately not traversed;
 # opaque stand-in structs live in the hand-written Native/OpaqueTypes.cs.
